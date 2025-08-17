@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compartilhar Localização</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+  <h2>Compartilhar Localização</h2>
+  <p>Clique no botão abaixo e permita acesso à sua localização.</p>
+  <button onclick="enviarLocalizacao()" style="padding: 15px 25px; font-size: 18px; border-radius: 10px; background: #2a9d8f; color: white; border: none;">
+    Enviar Localização
+  </button>
+
+  <p id="status" style="margin-top:20px; font-weight:bold;"></p>
+
+  <script>
+    function enviarLocalizacao() {
+      document.getElementById("status").innerText = "Obtendo localização...";
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var lat = position.coords.latitude;
+          var lon = position.coords.longitude;
+          var acc = position.coords.accuracy;
+
+          // 👉 SEU LINK DO APPS SCRIPT
+          var url = "https://script.google.com/macros/s/AKfycby3HNIeGkK0mRoLwuX5MR2bxNgWoNn4K04_3nqaCHYaHSdseu1RiJrdBY8bgjfIol_qBA/exec" +
+                    "?label=usuario" +
+                    "&latitude=" + lat +
+                    "&longitude=" + lon +
+                    "&accuracy_m=" + acc;
+
+          document.getElementById("status").innerText = "Enviando dados...";
+
+          // Faz a requisição sem sair da página
+          fetch(url)
+            .then(r => r.text())
+            .then(resp => {
+              document.getElementById("status").innerText = "Localização enviada com sucesso!";
+            })
+            .catch(err => {
+              document.getElementById("status").innerText = "Erro ao enviar: " + err;
+            });
+        });
+      } else {
+        document.getElementById("status").innerText = "Geolocalização não é suportada neste dispositivo.";
+      }
+    }
+  </script>
+</body>
+</html>
